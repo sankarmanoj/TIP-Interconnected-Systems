@@ -28,16 +28,24 @@ public class MainActivity extends Activity {
 
     EditText inputText;
     Button myButton;
+    PrintWriter toServer;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         inputText=(EditText)findViewById(R.id.editText);
         myButton=(Button)findViewById(R.id.button);
+        ServerConnect connect = new ServerConnect();
+        connect.execute(null,null,null);
         View.OnClickListener buttonListener = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 String input = inputText.getText().toString();
+                if(toServer!=null)
+                {
+                    toServer.write(input);
+                    toServer.flush();
+                }
                 Log.d("MainActivity", input);
                 inputText.setText("");
             }
@@ -78,14 +86,15 @@ public class MainActivity extends Activity {
                 OutputStream toS = server.getOutputStream();
                 InputStream fromS = server.getInputStream();
                 BufferedReader fromServer = new BufferedReader(new InputStreamReader(fromS));
-                PrintWriter toServer = new PrintWriter(new OutputStreamWriter(toS));
-                fromServer.read();
-                toServer.write();
+                toServer = new PrintWriter(new OutputStreamWriter(toS));
+
+
             }
             catch (IOException e)
             {
                 e.printStackTrace();
             }
+            return null;
         }
     }
 }
