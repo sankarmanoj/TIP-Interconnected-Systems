@@ -25,9 +25,9 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.SocketAddress;
 
-
 public class MainActivity extends Activity {
 
+    static MainActivity myActivity;
     TextView myTextView;
     Button myButton;
     EditText myEditText;
@@ -35,18 +35,21 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        myActivity = this;
         final NetworkThread myNetwork = new NetworkThread(getApplicationContext());
         new Thread(myNetwork).start();
+
         myTextView=(TextView)findViewById(R.id.textView);
         myButton=(Button)findViewById(R.id.button);
         myEditText = (EditText)findViewById(R.id.editText);
+
         View.OnClickListener myListener = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 String input = myEditText.getText().toString();
                 myNetwork.getOutput().write(input);
                 myNetwork.getOutput().flush();
-             myTextView.setText(input);
+             //myTextView.setText(myNetwork.getInput().read(100).toString());
             }
         };
         myButton.setOnClickListener(myListener);
